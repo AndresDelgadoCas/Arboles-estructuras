@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Establo de Árboles · Genealogía equina</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="top">
+    <h1>Establo de Árboles</h1>
+    <p>Estructuras de árbol aplicadas a la cría de caballos Paso Fino y Criollo.</p>
+    <nav role="tablist">
+      <button class="tab active" data-tab="pedigree" role="tab">Genealogía (árbol binario)</button>
+      <button class="tab" data-tab="ranking" role="tab">Ranking de concurso (árbol de búsqueda)</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ===== PEDIGREE ===== -->
+    <section id="pedigree" class="panel active">
+      <div class="explain">
+        <p>Cada caballo tiene como máximo dos ancestros directos: el <strong class="sire">padre (semental)</strong> a la izquierda y la <strong class="dam">madre (yegua)</strong> a la derecha. Haz clic en un caballo para seleccionarlo y agregarle un ancestro.</p>
+      </div>
+
+      <div class="tree-box"><svg id="pedigree-svg" aria-label="Árbol genealógico"></svg></div>
+
+      <div class="grid">
+        <form id="pedigree-form" class="card">
+          <h2>Agregar ancestro</h2>
+          <p id="selected-info" class="hint">Selecciona un caballo en el árbol.</p>
+          <label>Nombre <input name="name" required placeholder="Ej: Brisa"></label>
+          <label>Raza <input name="breed" placeholder="Paso Fino Colombiano"></label>
+          <label>Año de nacimiento <input name="birth_year" type="number" min="1900" max="2100"></label>
+          <div class="row">
+            <button type="button" id="add-sire" class="btn sire-bg">Agregar como padre</button>
+            <button type="button" id="add-dam" class="btn dam-bg">Agregar como madre</button>
+          </div>
+          <button type="button" id="remove-node" class="btn ghost">Eliminar caballo seleccionado y sus ancestros</button>
+          <button type="button" id="reset-pedigree" class="btn ghost">Restaurar ejemplo</button>
+          <p id="pedigree-msg" class="msg" role="alert"></p>
+        </form>
+
+        <div class="card">
+          <h2>Análisis del pedigrí</h2>
+          <dl class="stats">
+            <div><dt>Caballos</dt><dd id="p-size">0</dd></div>
+            <div><dt>Generaciones</dt><dd id="p-height">0</dd></div>
+          </dl>
+          <h3>Recorridos</h3>
+          <p><strong>Preorden:</strong> <span id="p-pre"></span></p>
+          <p><strong>Inorden:</strong> <span id="p-in"></span></p>
+          <p><strong>Postorden:</strong> <span id="p-post"></span></p>
+          <p><strong>Por niveles:</strong> <span id="p-level"></span></p>
+          <h3>Ruta desde el caballo principal</h3>
+          <p id="p-path" class="hint">Selecciona un caballo.</p>
+          <h3>Ancestros repetidos (consanguinidad)</h3>
+          <ul id="p-repeated"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== RANKING ===== -->
+    <section id="ranking" class="panel">
+      <div class="explain">
+        <p>Árbol binario de búsqueda ordenado por puntos: los caballos con menos puntos van a la izquierda y los de más puntos a la derecha. Así se encuentra al mejor y al peor del concurso sin revisar toda la lista.</p>
+      </div>
+
+      <div class="tree-box"><svg id="ranking-svg" aria-label="Árbol del ranking"></svg></div>
+
+      <div class="grid">
+        <div class="card">
+          <form id="ranking-form">
+            <h2>Inscribir caballo</h2>
+            <label>Nombre <input name="name" required></label>
+            <label>Puntos <input name="points" type="number" step="any" required></label>
+            <label>Modalidad <input name="discipline" placeholder="Trocha y galope"></label>
+            <button class="btn sire-bg" type="submit">Inscribir</button>
+          </form>
+          <form id="search-form" class="inline">
+            <h2>Buscar o retirar</h2>
+            <input name="name" placeholder="Nombre del caballo" required>
+            <div class="row">
+              <button class="btn" type="submit">Buscar</button>
+              <button class="btn ghost" type="button" id="delete-horse">Retirar</button>
+            </div>
+          </form>
+          <p id="ranking-msg" class="msg" role="alert"></p>
+        </div>
+
+        <div class="card">
+          <h2>Clasificación</h2>
+          <dl class="stats">
+            <div><dt>Mejor</dt><dd id="r-best">–</dd></div>
+            <div><dt>Menor puntaje</dt><dd id="r-worst">–</dd></div>
+            <div><dt>Altura</dt><dd id="r-height">0</dd></div>
+          </dl>
+          <table>
+            <thead><tr><th>Puesto</th><th>Caballo</th><th>Puntos</th><th>Modalidad</th></tr></thead>
+            <tbody id="r-table"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
